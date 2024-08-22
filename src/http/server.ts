@@ -1,16 +1,22 @@
 import fastify from 'fastify';
+import { setupMongo } from '../database';
+import { articlesRoutes } from './controllers/articles/route';
 
-const app = fastify();
+export const app = fastify();
 
-app.get('/', (_, reply) => {
-	return reply.status(200).send({ message: 'Hello World!' });
-});
-
-app
-	.listen({
-		host: '0.0.0.0',
-		port: 4000,
-	})
+setupMongo()
 	.then(() => {
-		console.log('🚀 Server is running at port 4000...');
+		app.register(articlesRoutes);
+
+		app
+			.listen({
+				host: '0.0.0.0',
+				port: 4000,
+			})
+			.then(() => {
+				console.log('🚀 Server is running at port 4000...');
+			});
+	})
+	.catch((err) => {
+		console.log(err);
 	});
