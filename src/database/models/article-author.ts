@@ -2,8 +2,8 @@ import { Schema, Types } from 'mongoose';
 
 export const ArticleAuthorSchema = new Schema(
 	{
-		id: Types.ObjectId,
+		_id: Types.ObjectId,
 		name: String,
 	},
-	{ timestamps: true, versionKey: false },
+	{ timestamps: false, versionKey: false, _id: false },
 );

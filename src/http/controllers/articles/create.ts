@@ -1,13 +1,21 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Types } from 'mongoose';
 import slugify from 'slugify';
+import { z } from 'zod';
 import { Article } from '../../../database/models/article';
+import { BadRequestError } from '../../../errors/bad-request-error';
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
-	// TODO validar dados de entrada do artigo
+	const schema = z.object({
+		title: z.string().max(255),
+		subtitle: z.string().max(500),
+		content: z.string(),
+		tags: z.array(z.string()),
+	});
 
-	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const { title, subtitle, content, tags } = request.body as any; // TODO tipar dados de entrada do artigo
+	const data = schema.parse(request.body);
+
+	const { title, content, subtitle, tags } = data;
 
 	const slug = slugify(title, {
 		replacement: '-',
@@ -19,14 +27,20 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 	});
 
 	const author = {
-		id: new Types.ObjectId(),
+		_id: new Types.ObjectId('66cfb76f0f7bd289c7b3e6bd'),
 		name: 'Agustinho Neto',
 	};
 
-	// TODO verificar se slug já foi criado;
+	const uniqueSlug = `${slug}-${author._id}`;
+
+	const findArticles = await Article.find({ slug: uniqueSlug });
+
+	if (findArticles.length > 0) {
+		throw new BadRequestError('Article title already exists.');
+	}
 
 	const createdArticle = await Article.create({
-		slug: `${slug}-${author.id}`, // TODO melhorar hash do slug
+		slug: uniqueSlug,
 		title,
 		subtitle,
 		content,
