@@ -11,6 +11,8 @@ export async function list(request: FastifyRequest, reply: FastifyReply) {
 
 	const { title } = filters;
 
+	// TODO add more filters
+	// TODO add pagination
 	const articles = await Article.find(
 		{
 			...(title && {

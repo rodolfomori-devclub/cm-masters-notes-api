@@ -26,6 +26,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 		trim: true,
 	});
 
+	// TODO use logged user
 	const author = {
 		_id: new Types.ObjectId('66cfb76f0f7bd289c7b3e6bd'),
 		name: 'Agustinho Neto',
