@@ -13,8 +13,6 @@ export async function findArticleById(id: string) {
 	return article;
 }
 
-// TODO find by article
-
 export async function find(request: FastifyRequest, reply: FastifyReply) {
 	const schema = z.object({
 		id: z.string().length(24),

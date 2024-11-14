@@ -2,7 +2,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { Types } from 'mongoose';
 import { z } from 'zod';
 import { Article } from '../../../database/models/article';
+import { User } from '../../../database/models/user';
 import { ForbiddenError } from '../../../errors/forbidden-error';
+import { NotFoundError } from '../../../errors/not-found-error';
 import { findArticleById } from './find';
 
 export async function remove(request: FastifyRequest, reply: FastifyReply) {
@@ -14,11 +16,13 @@ export async function remove(request: FastifyRequest, reply: FastifyReply) {
 
 	const article = await findArticleById(params.id);
 
-	// TODO use logged user
-	const user = {
-		_id: new Types.ObjectId('66cfb76f0f7bd289c7b3e6bd'),
-		name: 'Agustinho Neto',
-	};
+	const user = await User.findById(
+		new Types.ObjectId((request.user as Record<string, unknown>).id as string),
+	);
+
+	if (!user) {
+		throw new NotFoundError('User does not exists.');
+	}
 
 	if (String(article.author?._id) !== user._id.toString()) {
 		throw new ForbiddenError('This article is from another author.');

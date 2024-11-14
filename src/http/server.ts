@@ -1,13 +1,26 @@
+import 'dotenv/config';
+import fastifyJwt from '@fastify/jwt';
 import fastify from 'fastify';
 import { ZodError } from 'zod';
 import { setupMongo } from '../database';
 import { AppError } from '../errors/app-error';
 import { articlesRoutes } from './controllers/articles/route';
+import { authRoutes } from './controllers/auth/route';
+import { usersRoutes } from './controllers/users/route';
 
 export const app = fastify();
 
 setupMongo()
 	.then(() => {
+		app.register(fastifyJwt, {
+			secret: String(process.env.JWT_SECRET),
+			sign: {
+				expiresIn: String(process.env.JWT_EXPIRATION),
+			},
+		});
+
+		app.register(authRoutes);
+		app.register(usersRoutes);
 		app.register(articlesRoutes);
 
 		app.setErrorHandler((error, _, reply) => {

@@ -29,3 +29,5 @@ export async function list(request: FastifyRequest, reply: FastifyReply) {
 
 	return reply.status(200).send({ data: articles });
 }
+
+// FIND MY ARTICLES

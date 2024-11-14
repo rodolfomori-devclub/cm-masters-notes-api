@@ -8,7 +8,7 @@ export async function setupMongo() {
 
 		console.log('🎲 Connecting to database...');
 
-		await mongoose.connect('mongodb://127.0.0.1:27017/masters-notes');
+		await mongoose.connect(String(process.env.MONGODB_URL));
 
 		console.log('🔥 Database connected!');
 	} catch (err) {
