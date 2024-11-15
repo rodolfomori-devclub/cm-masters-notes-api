@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import { Article } from '../../../database/models/article';
 
-export async function list(request: FastifyRequest, reply: FastifyReply) {
+export async function listMy(request: FastifyRequest, reply: FastifyReply) {
 	const schema = z.object({
 		title: z.string().max(255).optional(),
 		tags: z.string().max(255).optional(),
@@ -18,6 +18,7 @@ export async function list(request: FastifyRequest, reply: FastifyReply) {
 	const offset = pageLimit * (pageNumber - 1);
 
 	const query = {
+		'author._id': (request.user as Record<string, unknown>).id as string,
 		...(title && {
 			title: {
 				$regex: title,

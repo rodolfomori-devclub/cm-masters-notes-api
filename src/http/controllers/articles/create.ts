@@ -51,7 +51,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 		title,
 		subtitle,
 		content,
-		tags,
+		tags: tags.map((tag) => tag.toLowerCase().trim()),
 		author,
 	});
 
