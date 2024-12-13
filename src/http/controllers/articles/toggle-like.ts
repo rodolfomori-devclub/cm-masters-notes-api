@@ -13,7 +13,7 @@ export async function toggleLike(request: FastifyRequest, reply: FastifyReply) {
 	const article = await findArticleById(params.id);
 
 	const bodySchema = z.object({
-		fingerprint: z.string().length(32),
+		fingerprint: z.string(),
 	});
 
 	const data = bodySchema.parse(request.body);
