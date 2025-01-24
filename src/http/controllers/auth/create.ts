@@ -32,7 +32,10 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 		id: userExists._id.toString(),
 	});
 
-	return reply
-		.status(201)
-		.send({ token, fullName: userExists.fullName, email: userExists.email });
+	return reply.status(201).send({
+		id: userExists.id,
+		token,
+		fullName: userExists.fullName,
+		email: userExists.email,
+	});
 }
